@@ -12,11 +12,9 @@
 
 <launch>
     <arg name="path" />
-    <arg name="z_min" default="-0.55" />
-    <arg name="z_max" default="-0.44"  />
+    <arg name="z_min" default="-5.0" />
+    <arg name="z_max" default="-0.0"  />
 
-	<!-- <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" args="/home/youliang/catkin_ws/big_officeLoop2_2.bt" > -->
-	
     <node pkg="octomap_server" type="octomap_server_node" name="octomap_server" args="$(arg path)" >
 		
 	<param name="resolution" value="0.05" />
@@ -32,7 +30,7 @@
 		
 	<!-- data source to integrate (PointCloud2) -->
 	<remap from="cloud_in" to="/velodyne_points" />
-	<remap from="/projected_map" to="map" />
+	<!-- <remap from="/projected_map" to="map" /> -->
 
     </node>
 </launch>

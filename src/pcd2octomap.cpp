@@ -26,8 +26,9 @@
 using namespace std;
 
 double octotree_co =  0.05; //octo tree coefficient
-float roll = 0;
+float roll  = 0;
 float pitch = 0;
+float yaw   = 0;
 float angle_resolution = 0.002;
 
 
@@ -57,11 +58,9 @@ void teleop_callback(const geometry_msgs::Twist::ConstPtr& KeyIn){
 
     roll = roll + angle_resolution*KeyIn->linear.x;
     pitch = pitch + angle_resolution*KeyIn->angular.z;
+    yaw   = yaw + angle_resolution*KeyIn->linear.z;
 
-    // KeyIn->angular.z
-    std::cout << "###Entered Key Arrow UP Down " <<  KeyIn->linear.x << std::endl;
-    std::cout << "###Entered Key Arrow <----> " <<  KeyIn->angular.z << std::endl;
-
+    std::cout << "[teleop_cb] roll: " <<  roll << " pitch: " << pitch << "yaw: " << yaw << std::endl;
 }
 
 
@@ -86,7 +85,7 @@ void pointcloud_rotate(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::Poi
     // The same rotation matrix as before; theta radians around Z axis
     transform.rotate (Eigen::AngleAxisf (roll, Eigen::Vector3f::UnitX()));
     transform.rotate (Eigen::AngleAxisf (pitch, Eigen::Vector3f::UnitY()));
-    transform.rotate (Eigen::AngleAxisf (1.5, Eigen::Vector3f::UnitZ()));
+    transform.rotate (Eigen::AngleAxisf (yaw, Eigen::Vector3f::UnitZ()));
 
     // // Print the transformation
     // printf ("\n using an Affine3f\n");
@@ -96,9 +95,6 @@ void pointcloud_rotate(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::Poi
     pcl::transformPointCloud (*input_cloud, *output_cloud, transform);
 
 }
-
-
-
 
 
 // // ======================================= Main ================================================
@@ -144,7 +140,7 @@ int main( int argc, char** argv )
         ros::init(argc, argv, "PCD_Rotate");
         ros::NodeHandle n;
         ros::Publisher pub = n.advertise<sensor_msgs::PointCloud2>("/pcd", 100);
-        ros::Subscriber sub = n.subscribe<geometry_msgs::Twist>("/turtle1/cmd_vel", 2, teleop_callback);
+        ros::Subscriber sub = n.subscribe<geometry_msgs::Twist>("/cmd_vel", 1, teleop_callback);
         ros::Rate loop_rate(5); //1hz
 
         while (ros::ok())
