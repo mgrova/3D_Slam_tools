@@ -75,25 +75,33 @@ void getKey(){
 }
 
 
-// rotate via getchar
 void pointcloud_rotate(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud){
 
     Eigen::Affine3f transform = Eigen::Affine3f::Identity(); 
-
-    // getKey();
 
     // The same rotation matrix as before; theta radians around Z axis
     transform.rotate (Eigen::AngleAxisf (roll, Eigen::Vector3f::UnitX()));
     transform.rotate (Eigen::AngleAxisf (pitch, Eigen::Vector3f::UnitY()));
     transform.rotate (Eigen::AngleAxisf (yaw, Eigen::Vector3f::UnitZ()));
 
-    // // Print the transformation
-    // printf ("\n using an Affine3f\n");
-    // std::cout << transform.matrix() << std::endl;
-
     // // Executing the transformation
     pcl::transformPointCloud (*input_cloud, *output_cloud, transform);
 
+    const float mark_height = -2.0f;
+    const float mark_length = 0.3f;
+    pcl::PointXYZ origin(0.0, 0.0, mark_height);
+    output_cloud->push_back(origin);
+    for (float i = 0 ; i < mark_length ; i=i + 0.01)
+    {
+        pcl::PointXYZ point1(i, 0, mark_height);
+        output_cloud->push_back(point1);
+        pcl::PointXYZ point2(-i, 0, mark_height);
+        output_cloud->push_back(point2);
+        pcl::PointXYZ point3(0, i, mark_height);
+        output_cloud->push_back(point3);
+        pcl::PointXYZ point4(0, -i, mark_height);
+        output_cloud->push_back(point4);
+    }
 }
 
 
