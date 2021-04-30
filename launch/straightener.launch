@@ -5,14 +5,16 @@
 
 <launch>
 
-    <arg name="input_path" />
+	<arg name="input_path" />
 	<arg name="output_path" />
+	<arg name="output" default="screen"/>
 	<arg name="rviz" default="true" />
 	
-	<node pkg="3D_Slam_tools" type="pcd2octomap" name="pcd2octomap" args="$(arg input_path) $(arg output_path) --rotate" />
+	<node pkg="3D_Slam_tools" type="pcd2octomap" name="pcd2octomap"  respawn="false" output="$(arg output)"
+		   args="$(arg input_path) $(arg output_path) --rotate" />
 
 	<node pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" name="teleop_twist_keyboard" 
-		output="screen" respawn="false" args=" _speed:=2.0 _turn:=2.0" />
+		output="$(arg output)" respawn="false" args=" _speed:=2.0 _turn:=2.0" />
 
 
 	<group if="$(arg rviz)">
