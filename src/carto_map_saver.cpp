@@ -82,8 +82,8 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map)
 		<< "occupied_thresh: 0.65\n"
 		<< "free_thresh: 0.196\n\n"
 		<< "# Pixel associated with LiDAR origin\n"
-		<< "origin_px_x: \n"
-		<< "origin_px_y: \n";
+		<< "origin_px_x: 0\n"
+		<< "origin_px_y: 0\n";
 	fprintf(yaml, "%s\n", oss.str().c_str());
 	fclose(yaml);
 
