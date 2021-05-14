@@ -66,9 +66,9 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map)
 	fclose(out);
 
 
-	std::string mapmetadatafile = mapname_ + ".yaml";
-	ROS_INFO("Writing map occupancy data to %s", mapmetadatafile.c_str());
-	FILE* yaml = fopen(mapmetadatafile.c_str(), "w");
+	std::string mapmetadatafile_yaml = mapname_ + ".yaml";
+	ROS_INFO("Writing map occupancy data to %s", mapmetadatafile_yaml.c_str());
+	FILE* yaml = fopen(mapmetadatafile_yaml.c_str(), "w");
 
 	std::ostringstream oss;
 	oss << "%YAML:1.0\n\n"
@@ -86,6 +86,18 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map)
 		<< "origin_px_y: 0\n";
 	fprintf(yaml, "%s\n", oss.str().c_str());
 	fclose(yaml);
+
+	std::string mapmetadatafile_ini = mapname_ + ".ini";
+	ROS_INFO("Writing map occupancy data to %s", mapmetadatafile_ini.c_str());
+	FILE* ini = fopen(mapmetadatafile_ini.c_str(), "w");
+	oss = std::ostringstream();
+	oss << "# Resolution in meters per pixel\n"
+		<< "resolution = " << map->info.resolution << "\n\n"
+		<< "# Pixels associated with map origin\n"
+		<< "origin_px_x = 0\n"
+		<< "origin_px_y = 0\n";
+	fprintf(ini, "%s\n", oss.str().c_str());
+	fclose(ini);
 
 	ROS_INFO("Saved image and created configuration file successfully");
 	saved_map_ = true;
