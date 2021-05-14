@@ -59,8 +59,7 @@ void teleop_callback(const geometry_msgs::Twist::ConstPtr& KeyIn){
     pitch = pitch + angle_resolution*KeyIn->angular.z;
     yaw   = yaw + angle_resolution*KeyIn->linear.z;
 
-    std::cout << "[teleop_cb] roll: " <<  roll << " pitch: " << pitch << "yaw: " << yaw << std::endl;
-    std::cout << std::flush;
+    ROS_INFO("[teleop_cb] Roll:%f Pitch:%f Yaw:%f", roll, pitch, yaw);
 }
 
 void pointcloud_rotate(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr output_cloud){
@@ -81,6 +80,8 @@ void pointcloud_rotate(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::Poi
 void add_origin_crosses(pcl::PointCloud<pcl::PointXYZ>& cloud){
     pcl::PointXYZ minPt, maxPt;
     pcl::getMinMax3D (cloud, minPt, maxPt);
+
+    ROS_INFO_ONCE("[add_origin_crosses] Min cloud altitud: %f,  Max cloud altitude : %f", minPt.z, maxPt.z);
 
     const float cross_length = 0.3f;
     for (float cross_height = minPt.z ; cross_height < maxPt.z ; cross_height += 0.5){
@@ -119,7 +120,7 @@ int main( int argc, char** argv )
         int input_idx = pcl::console::find_argument (argc, argv, "-s") + 1;
         std::stringstream ss( argv[input_idx] );
         if ( !(ss >> octotree_co))
-        std::cout << "Invalid double...\n";
+        std::cout << "Invalid double..." << std::endl;
     } 
     std::cout << "Input double arg for '-s' is " << octotree_co << std::endl;
 
@@ -136,7 +137,7 @@ int main( int argc, char** argv )
     // Rotate?
     if (pcl::console::find_switch (argc, argv, "--rotate")){
 
-        std::cout << "\t Rotate Mode!!!\n";
+        std::cout << "Rotate Mode!!!" << std::endl;
         pcl::PointCloud<pcl::PointXYZ>::Ptr transformed_cloud (new pcl::PointCloud<pcl::PointXYZ> ());
 
         ros::init(argc, argv, "PCD_Rotate");
